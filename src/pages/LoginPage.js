@@ -3,6 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import firebase from 'firebase'
 import { render } from 'react-dom'
 
+import Input from '../components/LoginInput'
+
 import { View, StyleSheet, Text, Image, TextInput, Platform } from 'react-native'
 
 class LoginPage extends React.Component {
@@ -14,10 +16,8 @@ class LoginPage extends React.Component {
                     <Image source={require('../../images/steamIcon.png')} style={styles.logo}/>
                     <Text style={styles.slogan}>Let the games begin</Text>
 
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.emailText}>Email</Text>
-                        <TextInput style={styles.textInput} />
-                    </View>
+                    <Input first text={'Email'}/>
+                    <Input text={'Password'} />
                 </LinearGradient>
             </View>
         )
@@ -42,20 +42,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         marginTop: 35,
         fontSize: 13
-    },
-    inputContainer: {
-        marginTop: 60
-    },
-    textInput: {
-        width: 230,
-        height: 40,
-        borderRadius: 10,
-        backgroundColor: '#71A6D6',
-    },
-    emailText: {
-        color: 'white',
-        marginLeft: 6,
-        fontSize: 11
     }
 })
 

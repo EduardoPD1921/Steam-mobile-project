@@ -4,8 +4,9 @@ import firebase from 'firebase'
 import { render } from 'react-dom'
 
 import Input from '../components/LoginInput'
+import Button from '../components/LoginButton'
 
-import { View, StyleSheet, Text, Image, TextInput, Platform } from 'react-native'
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native'
 
 class LoginPage extends React.Component {
     render() {
@@ -35,14 +36,13 @@ const styles = StyleSheet.create({
     logo: {
         width: 80,
         height: 80,
-        resizeMode: 'contain',
         marginTop: 50
     },
     slogan: {
         color: '#ffffff',
         marginTop: 35,
         fontSize: 13
-    }
+    },
 })
 
 export default LoginPage

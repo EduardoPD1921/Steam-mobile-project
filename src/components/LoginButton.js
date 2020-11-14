@@ -4,7 +4,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 export default props => {
     return (
-        <TouchableOpacity hitSlop={{top: 1, bottom: 1, left: 1, right: 1}}>
+        <TouchableOpacity>
             <View style={styles.viewContainer}>
                 <Text style={styles.text}>Sign in</Text>
             </View>

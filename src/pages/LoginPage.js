@@ -19,6 +19,20 @@ class LoginPage extends React.Component {
 
                     <Input first text={'Email'}/>
                     <Input text={'Password'} />
+
+                    <View style={styles.flexView}>
+                        <TouchableOpacity>
+                            <Text style={[styles.simpleText, {marginTop: 10}]}>Forgot password?</Text>
+                        </TouchableOpacity>
+                        <Button />
+                    </View>
+
+                    <View style={styles.signUpView}>
+                        <Text style={styles.simpleText}>Don't have an account?</Text>
+                        <TouchableOpacity>
+                            <Text style={[styles.simpleText, {color: '#0567FA'}, {marginLeft: 3}]}>Sign up</Text>
+                        </TouchableOpacity>
+                    </View>
                 </LinearGradient>
             </View>
         )
@@ -43,6 +57,20 @@ const styles = StyleSheet.create({
         marginTop: 35,
         fontSize: 13
     },
+    flexView: {
+        height: 90,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    simpleText: {
+        fontSize: 12,
+        color: 'white'
+    },
+    signUpView: {
+        alignItems: 'center',
+        flexDirection: 'row'
+    }
 })
 
 export default LoginPage

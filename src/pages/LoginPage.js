@@ -9,6 +9,39 @@ import Button from '../components/LoginButton'
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native'
 
 class LoginPage extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            email: '',
+            password: '',
+            isLoading: false
+        }
+    }
+
+    componentDidMount() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk3BO2aRLKWei6DLMRajGyyhwdwF5-S5A",
+            authDomain: "steam-mobile-project.firebaseapp.com",
+            databaseURL: "https://steam-mobile-project.firebaseio.com",
+            projectId: "steam-mobile-project",
+            storageBucket: "steam-mobile-project.appspot.com",
+            messagingSenderId: "329367772364",
+            appId: "1:329367772364:web:44590cf7e0e0495ae93669",
+            measurementId: "G-F0F5Z49DVL"
+          }
+
+          if (!firebase.apps.length) {
+              firebase.initializeApp(firebaseConfig)
+          }
+    }
+
+    onChangeTextHandler(type, value) {
+        this.setState({
+            [type]: value
+        })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -17,8 +50,9 @@ class LoginPage extends React.Component {
                     <Image source={require('../../images/steamIcon.png')} style={styles.logo}/>
                     <Text style={styles.slogan}>Let the games begin</Text>
 
-                    <Input first text={'Email'}/>
-                    <Input text={'Password'} />
+                    {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
+                    <Input first text={'Email'} onChangeText={this.onChangeTextHandler.bind(this)} emailValue={this.state.email} />
+                    <Input text={'Password'} onChangeText={this.onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
 
                     <View style={styles.flexView}>
                         <TouchableOpacity>

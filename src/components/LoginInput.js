@@ -1,12 +1,21 @@
 import React from 'react'
 import { TextInput, Text, StyleSheet, View, Image } from 'react-native'
 
-export default ({ first, text }) => {
+export default ({ first, text, emailValue, passwordValue, onChangeText }) => {
     return (
         <View style={first ? styles.emailContainer : styles.passwordContainer}>
             <Text style={styles.text}>{text}</Text>
-            <Image style={first ? styles.emailIcon : styles.passwordIcon} source={first ? require('../../images/emailIcon.png') : require('../../images/padlockIcon.png')}/>
-            <TextInput style={styles.textInput} secureTextEntry={first ? false : true}/>
+            <Image 
+                style={first ? styles.emailIcon : styles.passwordIcon} 
+                source={first ? require('../../images/emailIcon.png') : require('../../images/padlockIcon.png')}
+            />
+            
+            <TextInput 
+                value={first ? emailValue : passwordValue} 
+                style={styles.textInput} 
+                secureTextEntry={first ? false : true}
+                onChangeText={value => first ? onChangeText('email', value) : onChangeText('password', value)}
+            />
         </View>
     )
 }

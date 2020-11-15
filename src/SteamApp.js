@@ -1,14 +1,18 @@
 import React from 'react'
 import Router from './Router'
 
-import { createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
+import reduxThunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 
 import rootReducer from './reducers'
 
-import devToolsEnhancer from 'remote-redux-devtools'
+import { composeWithDevTools } from 'remote-redux-devtools'
 
-const store = createStore(rootReducer, devToolsEnhancer())
+const store = createStore(rootReducer, composeWithDevTools(
+    applyMiddleware(reduxThunk)
+))
+
 
 export default props => {
     return (

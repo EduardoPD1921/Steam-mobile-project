@@ -14,3 +14,19 @@ const userLogout = () => {
         type: USER_LOGOUT
     }
 }
+
+export const tryLogin = ({ email, password }) => dispatch => {
+    return (
+        firebase.auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(user => {
+                const action = userLoginSuccess(user)
+                dispatch(action)
+                
+                return user
+            })
+            .catch(error => {
+                return error
+            })
+    )
+}

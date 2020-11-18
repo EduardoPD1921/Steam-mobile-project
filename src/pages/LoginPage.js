@@ -24,6 +24,7 @@ class LoginPage extends React.Component {
         this.state = {
             email: '',
             password: '',
+            message: '',
             isLoading: false
         }
     }
@@ -51,19 +52,34 @@ class LoginPage extends React.Component {
         })
     }
 
+    getMessageByErrorCode(error) {
+        switch (error) {
+            case 'auth/wrong-password':
+                return 'Incorrect password'
+            case 'auth/invalid-email':
+                return 'Invalid email'
+            case 'auth/user-not-found':
+                return 'User not found'
+            default:
+                return 'Unknown error'
+        }
+    }
+
     tryLogin() {
         this.setState({isLoading: true})
         const { email, password } = this.state
 
         this.props.tryLogin(email, password)
             .then(user => {
-                this.setState({isLoading: false})
+                this.setState({isLoading: false, message: ''})
                 console.log(user)
+            })
+            .catch(error => {
+                this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
             })
     }
 
     renderButtonLoading() {
-        console.log('test')
         if (this.state.isLoading === true) {
             return (
                 <ActivityIndicator style={{marginBottom: 20}} color='#076BBB'></ActivityIndicator>
@@ -74,6 +90,16 @@ class LoginPage extends React.Component {
             <TouchableOpacity onPress={() => this.tryLogin()}>
                 <Button />
             </TouchableOpacity>
+        )
+    }
+
+    renderErrorMessage() {
+        if (!!this.state.message === false) {
+            return null
+        }
+
+        return (
+            <Text style={styles.errorMessage}>{this.state.message}</Text>
         )
     }
 
@@ -88,7 +114,7 @@ class LoginPage extends React.Component {
                     {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
                     <Input first text={'Email'} onChangeText={this.onChangeTextHandler.bind(this)} emailValue={this.state.email} />
                     <Input text={'Password'} onChangeText={this.onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
-
+                    {this.renderErrorMessage()}
                     <View style={styles.flexView}>
                         <TouchableOpacity>
                             <Text style={[styles.simpleText, {marginTop: 10}]}>Forgot password?</Text>
@@ -139,6 +165,11 @@ const styles = StyleSheet.create({
     signUpView: {
         alignItems: 'center',
         flexDirection: 'row'
+    },
+    errorMessage: {
+        color: 'red',
+        fontSize: 11,
+        marginTop: 5
     }
 })
 

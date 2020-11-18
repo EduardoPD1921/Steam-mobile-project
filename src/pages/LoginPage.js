@@ -60,10 +60,25 @@ class LoginPage extends React.Component {
                 this.setState({isLoading: false})
                 console.log(user)
             })
+            .catch(error => {
+                console.log(this.getMessageByErrorCode(error))
+            })
+    }
+
+    getMessageByErrorCode(error) {
+        switch (error) {
+            case 'auth/wrong-password':
+                return 'Incorrect password'
+            case 'auth/invalid-email':
+                return 'Invalid email'
+            case 'user-not-found':
+                return 'User not found'
+            default:
+                return ''
+        }
     }
 
     renderButtonLoading() {
-        console.log('test')
         if (this.state.isLoading === true) {
             return (
                 <ActivityIndicator style={{marginBottom: 20}} color='#076BBB'></ActivityIndicator>

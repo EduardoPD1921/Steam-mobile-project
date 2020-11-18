@@ -24,4 +24,7 @@ export const tryLogin = ( email, password ) => dispatch => {
 
             return user
         })
+        .catch(error => {
+            return error.code
+        })
 }

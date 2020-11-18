@@ -29,8 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
-    "remote-redux-devtools": "^0.5.16",
-    "remotedev-server": "^0.3.1"
+    "redux-devtools-extension": "^2.13.8"
   },
   "private": true
 }

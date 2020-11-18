@@ -25,6 +25,6 @@ export const tryLogin = ( email, password ) => dispatch => {
             return user
         })
         .catch(error => {
-            return error.code
+            return Promise.reject(error)
         })
 }

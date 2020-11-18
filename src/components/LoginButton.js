@@ -1,14 +1,12 @@
 import React from 'react'
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 
 
 export default props => {
     return (
-        <TouchableOpacity>
-            <View style={styles.viewContainer}>
-                <Text style={styles.text}>Sign in</Text>
-            </View>
-        </TouchableOpacity>
+        <View style={styles.viewContainer}>
+            <Text style={styles.text}>Sign in</Text>
+        </View>
     )
 }
 
@@ -25,6 +23,6 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
-        color: 'white'
+        color: 'black'
     },
 })

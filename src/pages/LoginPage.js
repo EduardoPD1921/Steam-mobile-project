@@ -2,11 +2,20 @@ import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import firebase from 'firebase'
 import { render } from 'react-dom'
+import { connect } from 'react-redux'
 
 import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
 
-import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native'
+import { View, 
+    StyleSheet, 
+    Text, 
+    Image, 
+    TouchableOpacity,
+    ActivityIndicator 
+} from 'react-native'
+
+import { tryLogin } from '../actions'
 
 class LoginPage extends React.Component {
     constructor(props) {
@@ -42,6 +51,32 @@ class LoginPage extends React.Component {
         })
     }
 
+    tryLogin() {
+        this.setState({isLoading: true})
+        const { email, password } = this.state
+
+        this.props.tryLogin(email, password)
+            .then(user => {
+                this.setState({isLoading: false})
+                console.log(user)
+            })
+    }
+
+    renderButtonLoading() {
+        console.log('test')
+        if (this.state.isLoading === true) {
+            return (
+                <ActivityIndicator style={{marginBottom: 20}} color='#076BBB'></ActivityIndicator>
+            )
+        }
+
+        return (
+            <TouchableOpacity onPress={() => this.tryLogin()}>
+                <Button />
+            </TouchableOpacity>
+        )
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -58,7 +93,7 @@ class LoginPage extends React.Component {
                         <TouchableOpacity>
                             <Text style={[styles.simpleText, {marginTop: 10}]}>Forgot password?</Text>
                         </TouchableOpacity>
-                        <Button />
+                        {this.renderButtonLoading()}
                     </View>
 
                     <View style={styles.signUpView}>
@@ -107,4 +142,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LoginPage
+export default connect(null, { tryLogin })(LoginPage)

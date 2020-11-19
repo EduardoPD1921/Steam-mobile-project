@@ -103,6 +103,10 @@ class LoginPage extends React.Component {
         )
     }
 
+    navigateToSignup() {
+        this.props.navigation.navigate('Signup')
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -124,7 +128,7 @@ class LoginPage extends React.Component {
 
                     <View style={styles.signUpView}>
                         <Text style={styles.simpleText}>Don't have an account?</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.navigateToSignup()}>
                             <Text style={[styles.simpleText, {color: '#0567FA'}, {marginLeft: 3}]}>Sign up</Text>
                         </TouchableOpacity>
                     </View>

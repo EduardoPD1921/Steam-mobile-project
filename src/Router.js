@@ -15,6 +15,7 @@ const AppNavigator = createStackNavigator({
     'Signup': {
         screen: SignupPage,
         navigationOptions: {
+            headerShown: false,
             headerStyle: {
                 backgroundColor: '#152e59'
             }

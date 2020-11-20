@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
 
+import onChangeTextHandler from '../Functions/onChangeTextHandler'
+
 import { View, 
     StyleSheet, 
     Text, 
@@ -46,11 +48,11 @@ class LoginPage extends React.Component {
           }
     }
 
-    onChangeTextHandler(type, value) {
+    /*onChangeTextHandler(type, value) {
         this.setState({
             [type]: value
         })
-    }
+    }*/
 
     getMessageByErrorCode(error) {
         switch (error) {
@@ -116,8 +118,8 @@ class LoginPage extends React.Component {
                     <Text style={styles.slogan}>Let the games begin</Text>
 
                     {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
-                    <Input first text={'Email'} onChangeText={this.onChangeTextHandler.bind(this)} emailValue={this.state.email} />
-                    <Input text={'Password'} onChangeText={this.onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
+                    <Input first text={'Email'} onChangeText={onChangeTextHandler.bind(this)} emailValue={this.state.email} />
+                    <Input text={'Password'} onChangeText={onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
                     {this.renderErrorMessage()}
                     <View style={styles.flexView}>
                         <TouchableOpacity>

@@ -1,13 +1,17 @@
 import React from 'react'
 import { TextInput, Text, View, StyleSheet } from 'react-native'
 
-export default ({ text, secureTextEntry }) => {
+export default ({ text, onChangeTextHandler }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.inputType}>
                 {text}
             </Text>
-            <TextInput secureTextEntry={secureTextEntry} style={styles.textInput}/>
+            <TextInput 
+                onChangeText={value => onChangeTextHandler(text.toLowerCase(), value)} 
+                secureTextEntry={text == 'Password' ? true : false} 
+                style={styles.textInput}
+            />
         </View>
     )
 }

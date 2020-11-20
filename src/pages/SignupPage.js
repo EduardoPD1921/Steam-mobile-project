@@ -1,11 +1,14 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
 import firebase from 'firebase'
 import { StatusBar } from 'expo-status-bar'
 
 import SignupInput from '../components/SignupInput'
+import SignupButton from '../components/SignupButton'
+
+import onChangeTextHandler from '../Functions/onChangeTextHandler'
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -14,7 +17,8 @@ export default class SignupPage extends React.Component {
         this.state = {
             username: '',
             email: '',
-            password: ''
+            password: '',
+            isLoading: false 
         }
     }
 
@@ -38,19 +42,29 @@ export default class SignupPage extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <View style={styles.arrowContainer}>
+                    <TouchableOpacity onPress={() => this.props.navigation.replace('Login')}>
+                        <Image style={styles.arrowIcon} source={require('../../images/arrowIcon.png')} />
+                    </TouchableOpacity>
+                </View>
+
                 <Image style={styles.steamLogo} source={require('../../images/steamLogoLight.png')}></Image>
                 <Text style={styles.signUpText}>Sign up</Text>
                 
                 <View style={styles.textInputContainer}>
-                    <SignupInput text={'Username'} secureTextEntry={false}/>
-                    <SignupInput text={'Email'} secureTextEntry={false}/>
-                    <SignupInput text={'Password'} secureTextEntry={true}/>
+                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Email'} />
+                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Password'} />
+                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Username'} />
                 </View>
 
                 <View style={styles.checkBoxContainer}>
                     <CheckBox tintColors={{ false: 'white' }} />
                     <Text style={styles.propagandaText}>You want to receive emails with our sales and informations?</Text>
                 </View>
+
+                <TouchableOpacity onPress={() => console.log(this.state)}>
+                    <SignupButton />
+                </TouchableOpacity>
             </View>
         )
     }
@@ -88,5 +102,15 @@ const styles = StyleSheet.create({
         height: 29,
         fontSize: 10,
         color: 'white'
+    },
+    arrowIcon: {
+        width: 30,
+        height: 30,
+        marginTop: 20,
+        marginLeft: 15
+    },
+    arrowContainer: {
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch'
     }
 })

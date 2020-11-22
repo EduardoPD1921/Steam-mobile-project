@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
 import firebase from 'firebase'
@@ -9,7 +9,6 @@ import SignupInput from '../components/SignupInput'
 import SignupButton from '../components/SignupButton'
 
 import onChangeTextHandler from '../Functions/onChangeTextHandler'
-import getMessageByErrorCode from '../Functions/getMessageByErrorCodeSignup'
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -20,9 +19,11 @@ export default class SignupPage extends React.Component {
             email: '',
             password: '',
             isLoading: false,
+            message: '',
             emailError: false,
             passwordError: false,
-            usernameError: false
+            usernameError: false,
+            signupSuccess: false
         }
     }
 
@@ -43,22 +44,102 @@ export default class SignupPage extends React.Component {
           }
     }
 
+    /*test() {
+        setInterval(() => {
+            this.props.navigation.goBack()
+        }, 3000);   
+    }*/
+
     trySignup() {
-        const { email, password, username } = this.state
+        if (this.state.username) {
+            this.setState({ isLoading: true })
 
-        firebase.auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then(() => {
-                let user = firebase.auth().currentUser
+            const { email, password, username } = this.state
 
-                user.updateProfile({
-                    displayName: username
+            firebase.auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    let user = firebase.auth().currentUser
+
+                    user.updateProfile({
+                        displayName: username
+                    }).then(
+                        this.setState({
+                            isLoading: false,
+                            signupSuccess: true,
+                            emailError: false,
+                            passwordError: false,
+                            usernameError: false,
+                            message: 'Sign up succesful!'
+                        }),
+                        setInterval(() => {
+                            this.props.navigation.goBack()
+                        }, 500)
+                    )
+                    
                 })
+                .catch(error => {
+                    this.setState({
+                        isLoading: false,
+                        message: this.getMessageByErrorCode(error.code)
+                    })
+
+                })
+        } else {
+            this.setState({
+                message: this.getMessageByErrorCode('invalid-username')
             })
-            .catch(error => {
-                let test = getMessageByErrorCode.bind(this)
-                test(error.code)
-            })
+        }
+    }
+
+    getMessageByErrorCode(error) {
+        this.setState({
+            emailError: false,
+            passwordError: false,
+            usernameError: false
+        })
+    
+        switch (error) {
+            case 'auth/invalid-email':
+                this.setState({ emailError: true })
+                return 'Invalid email'
+            case 'auth/email-already-in-use':
+                this.setState({ emailError: true })
+                return 'Email already in use'
+            case 'auth/weak-password':
+                this.setState({ passwordError: true })
+                return 'Password is too weak'
+            case 'invalid-username':
+                this.setState({ usernameError: true })
+                return 'Invalid username'
+            default:
+                return 'Unkown error'
+        }
+    }
+
+    renderButtonLoading() {
+        if (this.state.isLoading === true) {
+            return (
+                <ActivityIndicator style={{ marginTop: 30 }} color='#076BBB' />
+            )
+        }
+
+        return (
+            <TouchableOpacity onPress={() => this.trySignup()}>
+                <SignupButton />
+            </TouchableOpacity>
+        )
+    }
+
+    renderMessage() {
+        if (this.state.message) {
+            return (
+                <Text 
+                    style={this.state.signupSuccess ? styles.successMessage : styles.errorMessage
+                    }>{this.state.message}
+                </Text>
+            )
+        }
     }
 
     render() {
@@ -74,19 +155,19 @@ export default class SignupPage extends React.Component {
                 <Text style={styles.signUpText}>Sign up</Text>
                 
                 <View style={styles.textInputContainer}>
-                    <SignupInput error={this.state.emailError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Email'} />
-                    <SignupInput error={this.state.passwordError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Password'} />
-                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Username'} />
+                    <SignupInput success={this.state.signupSuccess} error={this.state.emailError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Email'} />
+                    <SignupInput success={this.state.signupSuccess} error={this.state.passwordError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Password'} />
+                    <SignupInput success={this.state.signupSuccess} error={this.state.usernameError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Username'} />
                 </View>
+
+                {this.renderMessage()}
 
                 <View style={styles.checkBoxContainer}>
                     <CheckBox tintColors={{ false: 'white' }} />
                     <Text style={styles.propagandaText}>You want to receive emails with our sales and informations?</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => this.trySignup()}>
-                    <SignupButton />
-                </TouchableOpacity>
+                {this.renderButtonLoading()}
             </View>
         )
     }
@@ -134,5 +215,13 @@ const styles = StyleSheet.create({
     arrowContainer: {
         justifyContent: 'flex-start',
         alignSelf: 'stretch'
+    },
+    errorMessage: {
+        color: 'red',
+        marginTop: 5
+    },
+    successMessage: {
+        color: 'green',
+        marginTop: 5
     }
 })

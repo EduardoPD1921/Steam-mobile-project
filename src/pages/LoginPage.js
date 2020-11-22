@@ -8,7 +8,6 @@ import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
 
 import onChangeTextHandler from '../Functions/onChangeTextHandler'
-import getMessageByErrorCode from '../Functions/getMessageByErrorCodeLogin'
 
 import { View, 
     StyleSheet, 
@@ -59,7 +58,7 @@ class LoginPage extends React.Component {
                 console.log(user)
             })
             .catch(error => {
-                this.setState({isLoading: false, message: getMessageByErrorCode(error.code)})
+                this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
             })
     }
 
@@ -85,6 +84,19 @@ class LoginPage extends React.Component {
         return (
             <Text style={styles.errorMessage}>{this.state.message}</Text>
         )
+    }
+
+    getMessageByErrorCode(error) {
+        switch (error) {
+            case 'auth/wrong-password':
+                return 'Incorrect password'
+            case 'auth/invalid-email':
+                return 'Invalid email'
+            case 'auth/user-not-found':
+                return 'User not found'
+            default:
+                return 'Unknown error'
+        }
     }
 
     render() {

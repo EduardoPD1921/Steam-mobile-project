@@ -8,6 +8,7 @@ import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
 
 import onChangeTextHandler from '../Functions/onChangeTextHandler'
+import getMessageByErrorCode from '../Functions/getMessageByErrorCodeLogin'
 
 import { View, 
     StyleSheet, 
@@ -48,25 +49,6 @@ class LoginPage extends React.Component {
           }
     }
 
-    /*onChangeTextHandler(type, value) {
-        this.setState({
-            [type]: value
-        })
-    }*/
-
-    getMessageByErrorCode(error) {
-        switch (error) {
-            case 'auth/wrong-password':
-                return 'Incorrect password'
-            case 'auth/invalid-email':
-                return 'Invalid email'
-            case 'auth/user-not-found':
-                return 'User not found'
-            default:
-                return 'Unknown error'
-        }
-    }
-
     tryLogin() {
         this.setState({isLoading: true})
         const { email, password } = this.state
@@ -77,7 +59,7 @@ class LoginPage extends React.Component {
                 console.log(user)
             })
             .catch(error => {
-                this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
+                this.setState({isLoading: false, message: getMessageByErrorCode(error.code)})
             })
     }
 
@@ -105,10 +87,6 @@ class LoginPage extends React.Component {
         )
     }
 
-    navigateToSignup() {
-        this.props.navigation.navigate('Signup')
-    }
-
     render() {
         return (
             <View style={styles.container}>
@@ -130,7 +108,7 @@ class LoginPage extends React.Component {
 
                     <View style={styles.signUpView}>
                         <Text style={styles.simpleText}>Don't have an account?</Text>
-                        <TouchableOpacity onPress={() => this.navigateToSignup()}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
                             <Text style={[styles.simpleText, {color: '#0567FA'}, {marginLeft: 3}]}>Sign up</Text>
                         </TouchableOpacity>
                     </View>

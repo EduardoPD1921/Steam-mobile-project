@@ -9,6 +9,7 @@ import SignupInput from '../components/SignupInput'
 import SignupButton from '../components/SignupButton'
 
 import onChangeTextHandler from '../Functions/onChangeTextHandler'
+import getMessageByErrorCode from '../Functions/getMessageByErrorCodeSignup'
 
 export default class SignupPage extends React.Component {
     constructor(props) {
@@ -18,7 +19,10 @@ export default class SignupPage extends React.Component {
             username: '',
             email: '',
             password: '',
-            isLoading: false 
+            isLoading: false,
+            emailError: false,
+            passwordError: false,
+            usernameError: false
         }
     }
 
@@ -39,11 +43,29 @@ export default class SignupPage extends React.Component {
           }
     }
 
+    trySignup() {
+        const { email, password, username } = this.state
+
+        firebase.auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                let user = firebase.auth().currentUser
+
+                user.updateProfile({
+                    displayName: username
+                })
+            })
+            .catch(error => {
+                let test = getMessageByErrorCode.bind(this)
+                test(error.code)
+            })
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.arrowContainer}>
-                    <TouchableOpacity onPress={() => this.props.navigation.replace('Login')}>
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                         <Image style={styles.arrowIcon} source={require('../../images/arrowIcon.png')} />
                     </TouchableOpacity>
                 </View>
@@ -52,8 +74,8 @@ export default class SignupPage extends React.Component {
                 <Text style={styles.signUpText}>Sign up</Text>
                 
                 <View style={styles.textInputContainer}>
-                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Email'} />
-                    <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Password'} />
+                    <SignupInput error={this.state.emailError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Email'} />
+                    <SignupInput error={this.state.passwordError} onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Password'} />
                     <SignupInput onChangeTextHandler={onChangeTextHandler.bind(this)} text={'Username'} />
                 </View>
 
@@ -62,7 +84,7 @@ export default class SignupPage extends React.Component {
                     <Text style={styles.propagandaText}>You want to receive emails with our sales and informations?</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => console.log(this.state)}>
+                <TouchableOpacity onPress={() => this.trySignup()}>
                     <SignupButton />
                 </TouchableOpacity>
             </View>

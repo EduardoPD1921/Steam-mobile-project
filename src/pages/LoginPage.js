@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
 
+import onChangeTextHandler from '../Functions/onChangeTextHandler'
+
 import { View, 
     StyleSheet, 
     Text, 
@@ -44,25 +46,6 @@ class LoginPage extends React.Component {
           if (!firebase.apps.length) {
               firebase.initializeApp(firebaseConfig)
           }
-    }
-
-    onChangeTextHandler(type, value) {
-        this.setState({
-            [type]: value
-        })
-    }
-
-    getMessageByErrorCode(error) {
-        switch (error) {
-            case 'auth/wrong-password':
-                return 'Incorrect password'
-            case 'auth/invalid-email':
-                return 'Invalid email'
-            case 'auth/user-not-found':
-                return 'User not found'
-            default:
-                return 'Unknown error'
-        }
     }
 
     tryLogin() {
@@ -103,6 +86,19 @@ class LoginPage extends React.Component {
         )
     }
 
+    getMessageByErrorCode(error) {
+        switch (error) {
+            case 'auth/wrong-password':
+                return 'Incorrect password'
+            case 'auth/invalid-email':
+                return 'Invalid email'
+            case 'auth/user-not-found':
+                return 'User not found'
+            default:
+                return 'Unknown error'
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -112,8 +108,8 @@ class LoginPage extends React.Component {
                     <Text style={styles.slogan}>Let the games begin</Text>
 
                     {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
-                    <Input first text={'Email'} onChangeText={this.onChangeTextHandler.bind(this)} emailValue={this.state.email} />
-                    <Input text={'Password'} onChangeText={this.onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
+                    <Input first text={'Email'} onChangeText={onChangeTextHandler.bind(this)} emailValue={this.state.email} />
+                    <Input text={'Password'} onChangeText={onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
                     {this.renderErrorMessage()}
                     <View style={styles.flexView}>
                         <TouchableOpacity>
@@ -124,7 +120,7 @@ class LoginPage extends React.Component {
 
                     <View style={styles.signUpView}>
                         <Text style={styles.simpleText}>Don't have an account?</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
                             <Text style={[styles.simpleText, {color: '#0567FA'}, {marginLeft: 3}]}>Sign up</Text>
                         </TouchableOpacity>
                     </View>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextInput, Text, View, StyleSheet } from 'react-native'
 
-export default ({ text, onChangeTextHandler }) => {
+export default ({ text, onChangeTextHandler, error }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.inputType}>
@@ -10,7 +10,7 @@ export default ({ text, onChangeTextHandler }) => {
             <TextInput 
                 onChangeText={value => onChangeTextHandler(text.toLowerCase(), value)} 
                 secureTextEntry={text == 'Password' ? true : false} 
-                style={styles.textInput}
+                style={error ? [styles.textInput, {borderBottomColor: 'red'}] : styles.textInput}
             />
         </View>
     )

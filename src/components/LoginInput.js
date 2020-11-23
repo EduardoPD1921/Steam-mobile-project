@@ -1,7 +1,17 @@
 import React from 'react'
 import { TextInput, Text, StyleSheet, View, Image } from 'react-native'
 
-export default ({ first, text, emailValue, passwordValue, onChangeText }) => {
+function getInputStyle(error, success) {
+    if (error) {
+        return [styles.textInput, { borderColor: 'red' }, { borderWidth: 1 }]
+    } else if (success) {
+        return [styles.textInput, { borderColor: 'green' }, { borderWidth: 2 }]
+    } else {
+        return styles.textInput
+    }
+}
+
+export default ({ first, text, emailValue, passwordValue, onChangeText, error, success }) => {
     return (
         <View style={first ? styles.emailContainer : styles.passwordContainer}>
             <Text style={styles.text}>{text}</Text>
@@ -12,7 +22,7 @@ export default ({ first, text, emailValue, passwordValue, onChangeText }) => {
             
             <TextInput 
                 value={first ? emailValue : passwordValue} 
-                style={styles.textInput} 
+                style={getInputStyle(error, success)} 
                 secureTextEntry={first ? false : true}
                 onChangeText={value => first ? onChangeText('email', value) : onChangeText('password', value)}
             />

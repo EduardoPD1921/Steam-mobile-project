@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack'
 
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
+import StorePage from './pages/StorePage'
 
 const AppNavigator = createStackNavigator({
     'Login': {
@@ -15,11 +16,11 @@ const AppNavigator = createStackNavigator({
     'Signup': {
         screen: SignupPage,
         navigationOptions: {
-            headerShown: false,
-            headerStyle: {
-                backgroundColor: '#152e59'
-            }
+            headerShown: false
         }
+    },
+    'Store': {
+        screen: StorePage
     }
 })
 

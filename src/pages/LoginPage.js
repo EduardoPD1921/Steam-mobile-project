@@ -27,7 +27,10 @@ class LoginPage extends React.Component {
             email: '',
             password: '',
             message: '',
-            isLoading: false
+            isLoading: false,
+            emailError: false,
+            passwordError: false,
+            loginSuccess: false
         }
     }
 
@@ -54,8 +57,16 @@ class LoginPage extends React.Component {
 
         this.props.tryLogin(email, password)
             .then(user => {
-                this.setState({isLoading: false, message: ''})
-                console.log(user)
+                this.setState({
+                    isLoading: false,
+                    message: 'Sign in succesful!',
+                    emailError: false,
+                    passwordError: false,
+                    loginSuccess: true
+                })
+                setInterval(() => {
+                    this.props.navigation.navigate('Store')
+                }, 500);
             })
             .catch(error => {
                 this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
@@ -76,23 +87,31 @@ class LoginPage extends React.Component {
         )
     }
 
-    renderErrorMessage() {
+    renderMessage() {
         if (!!this.state.message === false) {
             return null
         }
 
         return (
-            <Text style={styles.errorMessage}>{this.state.message}</Text>
+            <Text style={this.state.loginSuccess ? styles.successMessage: styles.errorMessage}>{this.state.message}</Text>
         )
     }
 
     getMessageByErrorCode(error) {
+        this.setState({
+            emailError: false,
+            passwordError: false
+        })
+
         switch (error) {
             case 'auth/wrong-password':
+                this.setState({ passwordError: true })
                 return 'Incorrect password'
             case 'auth/invalid-email':
+                this.setState({ emailError: true })
                 return 'Invalid email'
             case 'auth/user-not-found':
+                this.setState({ emailError: true })
                 return 'User not found'
             default:
                 return 'Unknown error'
@@ -108,9 +127,9 @@ class LoginPage extends React.Component {
                     <Text style={styles.slogan}>Let the games begin</Text>
 
                     {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
-                    <Input first text={'Email'} onChangeText={onChangeTextHandler.bind(this)} emailValue={this.state.email} />
-                    <Input text={'Password'} onChangeText={onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
-                    {this.renderErrorMessage()}
+                    <Input first success={this.state.loginSuccess} error={this.state.emailError} text={'Email'} onChangeText={onChangeTextHandler.bind(this)} emailValue={this.state.email} />
+                    <Input success={this.state.loginSuccess} error={this.state.passwordError} text={'Password'} onChangeText={onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
+                    {this.renderMessage()}
                     <View style={styles.flexView}>
                         <TouchableOpacity>
                             <Text style={[styles.simpleText, {marginTop: 10}]}>Forgot password?</Text>
@@ -166,6 +185,11 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 11,
         marginTop: 5
+    },
+    successMessage: {
+        color: 'green',
+        fontSize: 11,
+        marginTop: 5       
     }
 })
 

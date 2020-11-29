@@ -7,39 +7,14 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import StorePage from './pages/StorePage'
 import FriendsPage from './pages/FriendsPage'
-import { Header } from 'react-native/Libraries/NewAppScreen'
-
-// const AppNavigator = createStackNavigator({
-//     'Login': {
-//         screen: LoginPage,
-//         navigationOptions: {
-//             headerShown: false
-//         }
-//     },
-//     'Signup': {
-//         screen: SignupPage,
-//         navigationOptions: {
-//             headerShown: false
-//         }
-//     },
-//     'Store': {
-//         screen: StorePage,
-//         navigationOptions: {
-//             headerShown: false
-//         }
-//     }
-// })
-
-// const AppContainer = createAppContainer(AppNavigator)
-
-// export default AppContainer
+import CustomDrawer from './pages/CustomDrawer'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 
 function DrawerRoutes() {
     return (
-        <Drawer.Navigator initialRouteName='Store'>
+        <Drawer.Navigator initialRouteName={'Store'} drawerContent={props => <CustomDrawer {...props} />}>
             <Drawer.Screen name='Store' component={StorePage} />
             <Drawer.Screen name='Friends' component={FriendsPage} />
         </Drawer.Navigator>

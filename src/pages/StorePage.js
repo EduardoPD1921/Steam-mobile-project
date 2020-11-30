@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { connect } from 'react-redux'
 
 
 export default class StorePage extends React.Component {

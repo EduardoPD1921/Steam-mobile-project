@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 import { userLogout } from '../actions'
 
-function test(props) {
+function logOut(props) {
     props.userLogout()
     props.navigation.navigate('Login')
 }
@@ -45,7 +45,7 @@ function CustomDrawer(props) {
 
             <View style={styles.lastHalf}>
                 <DrawerItem
-                    onPress={() => test(props)}
+                    onPress={() => logOut(props)}
                     style={styles.logOut} 
                     labelStyle={{ color: 'white' }} 
                     label='Log out' 
@@ -92,10 +92,12 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-    if (state.user.user) {
+    if (state.user !== null) {
         return {
             userName: state.user.user.displayName
         }
+    } else {
+        return {  }
     }
 }
 

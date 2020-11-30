@@ -9,7 +9,7 @@ const userLoginSuccess = user => {
 }
 
 export const USER_LOGOUT = 'USER_LOGOUT'
-const userLogout = () => {
+export const userLogout = () => {
     return {
         type: USER_LOGOUT
     }

@@ -1,9 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import { connect } from 'react-redux'
+import { View, Text, StyleSheet } from 'react-native'
 
-
-export default class StorePage extends React.Component {
+export default class FriendsPage extends React.Component {
     constructor(props) {
         super(props)
 
@@ -15,12 +13,12 @@ export default class StorePage extends React.Component {
     render() {
         return (
             <View>
-                <Text>StorePage</Text>
+                <Text>FriendsPage</Text>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-
+    
 })

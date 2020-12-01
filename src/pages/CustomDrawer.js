@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { DrawerItem } from '@react-navigation/drawer'
-import { Avatar } from 'react-native-paper'
+import { Avatar, Drawer } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import { connect } from 'react-redux'
 
 import { userLogout } from '../actions'
@@ -40,58 +41,73 @@ class CustomDrawer extends React.Component {
         return (
             <View style={styles.mainContainer}>
                 <View style={styles.firstHalf}>
-                    <View style={styles.userInformation}>
-                        <Avatar.Image source={require('../../images/profilePicture.png')} size={50} />
-                        <Text style={styles.userId}>{this.props.userName}</Text>
-                        <Icon 
-                            style={styles.userStatus} 
-                            color={this.getUserStatusColor()} 
-                            name='checkbox-blank-circle' 
-                            size={10} 
+                    <Drawer.Section>
+                        <View style={styles.userInformation}>
+                            <Avatar.Image source={require('../../images/profilePicture.png')} size={50} />
+                            <Text style={styles.userId}>{this.props.userName}</Text>
+                            <Icon 
+                                style={styles.userStatus} 
+                                color={this.getUserStatusColor()} 
+                                name='checkbox-blank-circle' 
+                                size={10} 
+                            />
+                            <Picker 
+                                selectedValue={this.state.userStatus} 
+                                onValueChange={(itemValue, itemIndex) => this.setState({ userStatus: itemValue })} 
+                                style={styles.dropDownStatus}
+                            >
+                                <Picker.Item label='Online' value='online' />
+                                <Picker.Item label='Idle' value='idle' />
+                                <Picker.Item label='Offline' value='offline' />
+                            </Picker>
+                        </View>
+
+                        <DrawerItem 
+                            onPress={() => {}} 
+                            label='Profile' 
+                            labelStyle={{ color: 'white' }} 
+                            icon={() => <Icon 
+                            color='white' 
+                            name='account-outline' 
+                            size={20} />} 
                         />
-                        <Picker 
-                            selectedValue={this.state.userStatus} 
-                            onValueChange={(itemValue, itemIndex) => this.setState({ userStatus: itemValue })} 
-                            style={styles.dropDownStatus}
-                        >
-                            <Picker.Item label='Online' value='online' />
-                            <Picker.Item label='Idle' value='idle' />
-                            <Picker.Item label='Offline' value='offline' />
-                        </Picker>
-                    </View>
 
-                    <DrawerItem
-                        onPress={() => this.props.navigation.navigate('Store')} 
-                        label='Store' 
-                        labelStyle={{ color: 'white' }} 
-                        icon={() => <Icon 
-                        color='white' 
-                        name='cart-outline' 
-                        size={20} />} 
-                    />
+                        <DrawerItem
+                            onPress={() => this.props.navigation.navigate('Store')} 
+                            label='Store' 
+                            labelStyle={{ color: 'white' }} 
+                            icon={() => <Icon 
+                            color='white' 
+                            name='cart-outline' 
+                            size={20} />} 
+                        />
 
-                    <DrawerItem
-                        onPress={() => this.props.navigation.navigate('Friends')} 
-                        label='Friends' 
-                        labelStyle={{ color: 'white' }} 
-                        icon={() => <Icon 
-                        color='white' 
-                        name='face-profile' 
-                        size={20} />} 
-                    />
+                        <DrawerItem
+                            onPress={() => this.props.navigation.navigate('Friends')} 
+                            label='Friends' 
+                            labelStyle={{ color: 'white' }} 
+                            icon={() => <Icon 
+                            color='white' 
+                            name='face-profile' 
+                            size={20} />} 
+                        />
 
-                    <DrawerItem
-                        onPress={() => this.props.navigation.navigate('Wishlist')} 
-                        label='Wishlist' 
-                        labelStyle={{ color: 'white' }} 
-                        icon={() => <Icon 
-                        color='white' 
-                        name='format-list-bulleted' 
-                        size={20} />} 
-                    />
+                        <DrawerItem
+                            onPress={() => this.props.navigation.navigate('Wishlist')} 
+                            label='Wishlist' 
+                            labelStyle={{ color: 'white' }} 
+                            icon={() => <Icon 
+                            color='white' 
+                            name='format-list-bulleted' 
+                            size={20} />} 
+                        />
+                    </Drawer.Section>
                 </View>
 
                 <View style={styles.lastHalf}>
+                    <Drawer.Section style={styles.preferencesSection} title='Preferences'>
+                        <Text>Test</Text>
+                    </Drawer.Section>
                     <DrawerItem
                         onPress={() => this.logOut()}
                         style={styles.logOut} 
@@ -146,6 +162,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: 40,
         height: 40
+    },
+    preferencesSection: {
+        alignSelf: 'flex-start'
     }
 })
 

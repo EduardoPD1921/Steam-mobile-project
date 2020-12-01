@@ -57,16 +57,18 @@ class LoginPage extends React.Component {
 
         this.props.tryLogin(email, password)
             .then(user => {
-                this.setState({
-                    isLoading: false,
-                    message: 'Sign in succesful!',
-                    emailError: false,
-                    passwordError: false,
-                    loginSuccess: true
-                })
-                setInterval(() => {
+                if (user !== null) {
+                    this.setState({
+                        isLoading: false,
+                        message: '',
+                        emailError: false,
+                        passwordError: false,
+                        loginSuccess: false,
+                        email: '',
+                        password: ''
+                    })
                     this.props.navigation.navigate('Store')
-                }, 500);
+                }
             })
             .catch(error => {
                 this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})

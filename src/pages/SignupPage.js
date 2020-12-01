@@ -44,12 +44,6 @@ export default class SignupPage extends React.Component {
           }
     }
 
-    /*test() {
-        setInterval(() => {
-            this.props.navigation.goBack()
-        }, 3000);   
-    }*/
-
     trySignup() {
         if (this.state.username) {
             this.setState({ isLoading: true })
@@ -72,9 +66,6 @@ export default class SignupPage extends React.Component {
                             usernameError: false,
                             message: 'Sign up succesful!'
                         }),
-                        setInterval(() => {
-                            this.props.navigation.goBack()
-                        }, 500)
                     )
                     
                 })
@@ -117,6 +108,17 @@ export default class SignupPage extends React.Component {
         }
     }
 
+    backNavigation() {
+        this.setState({
+            username: '',
+            password: '',
+            email: '',
+            message: '',
+            signupSuccess: false
+        })
+        this.props.navigation.goBack()
+    }
+
     renderButtonLoading() {
         if (this.state.isLoading === true) {
             return (
@@ -146,7 +148,7 @@ export default class SignupPage extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.arrowContainer}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => this.backNavigation()}>
                         <Image style={styles.arrowIcon} source={require('../../images/arrowIcon.png')} />
                     </TouchableOpacity>
                 </View>

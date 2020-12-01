@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { DrawerItem } from '@react-navigation/drawer'
-import { Avatar, Drawer } from 'react-native-paper'
+import { Avatar, Drawer, Switch } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -63,7 +63,7 @@ class CustomDrawer extends React.Component {
                         </View>
 
                         <DrawerItem 
-                            onPress={() => {}} 
+                            onPress={() => this.props.navigation.navigate('Profile')} 
                             label='Profile' 
                             labelStyle={{ color: 'white' }} 
                             icon={() => <Icon 
@@ -105,19 +105,28 @@ class CustomDrawer extends React.Component {
                 </View>
 
                 <View style={styles.lastHalf}>
-                    <Drawer.Section style={styles.preferencesSection} title='Preferences'>
-                        <Text>Test</Text>
+                    <Drawer.Section 
+                        theme={{ colors: { text: 'white' } }} 
+                        style={styles.preferencesSection} 
+                        title='Preferences'
+                    >
+                        <View style={styles.sectionView}>
+                            <Text style={{ color: 'white' }}>Dark mode</Text>
+                            <Switch />
+                        </View>
                     </Drawer.Section>
-                    <DrawerItem
-                        onPress={() => this.logOut()}
-                        style={styles.logOut} 
-                        labelStyle={{ color: 'white' }} 
-                        label='Log out' 
-                        icon={() => <Icon 
-                        color='white' 
-                        name='exit-to-app' 
-                        size={16} />} 
-                    />
+                    <View style={styles.logoutView}>
+                        <DrawerItem
+                            onPress={() => this.logOut()}
+                            style={styles.logOut} 
+                            labelStyle={{ color: 'white' }} 
+                            label='Log out' 
+                            icon={() => <Icon 
+                            color='white' 
+                            name='exit-to-app' 
+                            size={16} />} 
+                        />
+                    </View>
                 </View>
             </View>
         )
@@ -136,7 +145,7 @@ const styles = StyleSheet.create({
     },
     lastHalf: {
         flex: 1,
-        justifyContent: 'flex-end'
+        flexDirection: 'column'
     },
     userInformation: {
         flexDirection: 'row',
@@ -163,9 +172,16 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40
     },
-    preferencesSection: {
-        alignSelf: 'flex-start'
-    }
+    sectionView: {
+        flexDirection: 'row',
+        marginTop: 10,
+        marginLeft: 17,
+        justifyContent: 'space-between'
+    },
+    logoutView: {
+        flex: 1,
+        justifyContent: 'flex-end'
+    },
 })
 
 const mapStateToProps = state => {

@@ -8,6 +8,7 @@ import SignupPage from './pages/SignupPage'
 import StorePage from './pages/StorePage'
 import FriendsPage from './pages/FriendsPage'
 import WishlistPage from './pages/WishlistPage'
+import ProfilePage from './pages/ProfilePage'
 import CustomDrawer from './pages/CustomDrawer'
 
 const Stack = createStackNavigator()
@@ -16,6 +17,7 @@ const Drawer = createDrawerNavigator()
 function DrawerRoutes() {
     return (
         <Drawer.Navigator initialRouteName={'Store'} drawerContent={props => <CustomDrawer {...props} />}>
+            <Drawer.Screen name='Profile' component={ProfilePage} />
             <Drawer.Screen name='Store' component={StorePage} />
             <Drawer.Screen name='Friends' component={FriendsPage} />
             <Drawer.Screen name='Wishlist' component={WishlistPage} />

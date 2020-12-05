@@ -34,23 +34,6 @@ class LoginPage extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const firebaseConfig = {
-            apiKey: "AIzaSyBk3BO2aRLKWei6DLMRajGyyhwdwF5-S5A",
-            authDomain: "steam-mobile-project.firebaseapp.com",
-            databaseURL: "https://steam-mobile-project.firebaseio.com",
-            projectId: "steam-mobile-project",
-            storageBucket: "steam-mobile-project.appspot.com",
-            messagingSenderId: "329367772364",
-            appId: "1:329367772364:web:44590cf7e0e0495ae93669",
-            measurementId: "G-F0F5Z49DVL"
-          }
-
-          if (!firebase.apps.length) {
-              firebase.initializeApp(firebaseConfig)
-          }
-    }
-
     tryLogin() {
         this.setState({isLoading: true})
         const { email, password } = this.state
@@ -67,7 +50,7 @@ class LoginPage extends React.Component {
                         email: '',
                         password: ''
                     })
-                    this.props.navigation.navigate('Store')
+                    this.props.navigation.replace('Store')
                 }
             })
             .catch(error => {

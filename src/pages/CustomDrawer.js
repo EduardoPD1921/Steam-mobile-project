@@ -1,8 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { DrawerItem } from '@react-navigation/drawer'
-import { Avatar, Drawer, Switch } from 'react-native-paper'
+import { Drawer, Switch } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
+
+import Avatar from '../components/Avatar'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -43,7 +45,7 @@ class CustomDrawer extends React.Component {
                 <View style={styles.firstHalf}>
                     <Drawer.Section>
                         <View style={styles.userInformation}>
-                            <Avatar.Image source={require('../../images/profilePicture.png')} size={50} />
+                            <Avatar image={this.props.photoURL} size={50} />
                             <Text style={styles.userId}>{this.props.userName}</Text>
                             <Icon 
                                 style={styles.userStatus} 
@@ -187,7 +189,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     if (state.user !== null) {
         return {
-            userName: state.user.user.displayName
+            userName: state.user.user.displayName,
+            photoURL: state.user.user.photoURL
         }
     } else {
         return {  }

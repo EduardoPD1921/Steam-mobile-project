@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "329367772364",
+    "firebase_url": "https://steam-mobile-project.firebaseio.com",
+    "project_id": "steam-mobile-project",
+    "storage_bucket": "steam-mobile-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329367772364:android:5b02831e100cb99ee93669",
+        "android_client_info": {
+          "package_name": "steam.mobile.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "329367772364-d4t2sgqd0v2j7ihajer52ooq65e8nq0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK9aE-Y2x-Xz_KS-R88omYjowPv7XZOEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "329367772364-d4t2sgqd0v2j7ihajer52ooq65e8nq0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -99,6 +99,7 @@ class LoginPage extends React.Component {
                 this.setState({ emailError: true })
                 return 'User not found'
             default:
+                console.log(error)
                 return 'Unknown error'
         }
     }

@@ -28,3 +28,27 @@ export const tryLogin = ( email, password ) => dispatch => {
             return Promise.reject(error)
         })
 }
+
+export const USER_UPDATE_PHOTO_URL = 'USER_UPDATE_PHOTO_URL'
+export const userUpdatePhotoUrl = photoUrl => {
+    return {
+        type: USER_UPDATE_PHOTO_URL,
+        photoUrl
+    }
+}
+
+export const USER_UPDATE_EMAIL = 'USER_UPDATE_EMAIL'
+export const userUpdateEmail = email => {
+    return {
+        type: USER_UPDATE_EMAIL,
+        email
+    }
+}
+
+export const USER_UPDATE_DISPLAY_NAME = 'USER_UPDATE_DISPLAY_NAME'
+export const userUpdateDisplayName = displayName => {
+    return {
+        type: USER_UPDATE_DISPLAY_NAME,
+        displayName
+    }
+}

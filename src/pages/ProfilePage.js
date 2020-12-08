@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Platform, Alert } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
 import firebase from '../firebase'
 import { connect } from 'react-redux'
 
@@ -8,7 +8,10 @@ import axios from 'axios'
 import ImagePicker from 'react-native-image-picker'
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 /*import Progress from 'react-native-progress'*/
+
+import { userUpdatePhotoUrl, userUpdateEmail, userUpdateDisplayName } from '../actions'
 
 import CLIENT_ID from '../../api'
 
@@ -17,6 +20,7 @@ function ProfileScreen(props) {
     const [imageInfo, setImageInfo] = useState(null)
     const [displayName, setDisplayName] = useState(props.displayName)
     const [email, setEmail] = useState(props.email)
+    const [isEditing, setIsEditing] = useState(false)
 
     function selectImage() {
         const options = {
@@ -45,52 +49,67 @@ function ProfileScreen(props) {
         })
     }
 
-    function uploadImage() {
-        /*const data = new FormData()
+    function updateUserInformations() {
+        setIsEditing(false)
 
-        data.append('image', {
-            fileName: imageInfo.fileName,
-            uri: imageInfo.uri,
-            type: imageInfo.type
-        })
+        if (image) {
+            const data = new FormData()
 
-        const uploadConfig = {
-            method: 'POST',
-            body: data,
-            headers: {
-                'Authorization': `Client-ID ${CLIENT_ID}`
+            data.append('image', {
+                fileName: imageInfo.fileName,
+                uri: imageInfo.uri,
+                type: imageInfo.type
+            })
+
+            const uploadConfig = {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Authorization': `Client-ID ${CLIENT_ID}`
+                }
             }
+
+            axios.post('https://api.imgur.com/3/image', data, uploadConfig)
+                .then(res => {
+                    setImage(res.data.data.link)
+
+                    firebase.auth().currentUser.updateProfile({
+                        photoURL: res.data.data.link
+                    })
+
+                    props.userUpdatePhotoUrl(res.data.data.link)
+                }).catch(e => {
+                    console.log(e)
+                })
         }
 
-        axios.post('https://api.imgur.com/3/image', data, uploadConfig)
-            .then(res => {
-                console.log(res.data.data.link)
-                setImage(res.data.data.link)
-
-                firebase.auth().currentUser.updateProfile({
-                    photoURL: res.data.data.link
-                })
-            }).catch(e => {
-                console.log(e)
-            })*/
+        firebase.auth().currentUser.updateEmail(email)
+            .then(() => {
+                props.userUpdateEmail(email)
+            })
+            .catch(e => console.log(e))
+        
+        firebase.auth().currentUser.updateProfile({
+            displayName: displayName
+        }).then(() => {
+            props.userUpdateDisplayName(displayName)
+        }).catch(e => console.log(e))
     }
 
     function currentProfileImage() {
         if (image !== null) {
-            console.log('test1')
             return image
         } else {
-            console.log('test2')
             return props.photoURL
         }
     }
 
     function onChangeInformationsHandler(content, field) {
         switch (field) {
-            case 'email':
+            case 'Email':
                 setEmail(content)
                 break
-            case 'displayName':
+            case 'Username':
                 setDisplayName(content)
                 break
             default:
@@ -107,9 +126,21 @@ function ProfileScreen(props) {
                 </TouchableOpacity>
             </View>
             <View style={styles.profileInformations}>
-                {console.log(props.displayName)}
-                <ProfileInfo isEditing={true} value='email' content={email} type='email' onChangeHandler={onChangeInformationsHandler} />
-                <ProfileInfo isEditing={true} value='displayName' content={displayName} type='displayName' onChangeHandler={onChangeInformationsHandler} />
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Profile informations</Text>
+                    <TouchableOpacity onPress={() => {
+                        setIsEditing(true)
+                    }}>
+                        <Icon color='white' name='account-edit' size={30} />
+                    </TouchableOpacity>
+                </View>
+                <ProfileInfo isEditing={isEditing} content={email} type='Email' onChangeHandler={onChangeInformationsHandler} />
+                <ProfileInfo isEditing={isEditing} content={displayName} type='Username' onChangeHandler={onChangeInformationsHandler} />
+                <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {
+                    updateUserInformations()
+                }}>
+                    <Icon name='content-save-edit' color='white' size={30} />
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -132,8 +163,18 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     profileInformations: {
-        backgroundColor: '#1C2A50',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        width: Dimensions.get('screen').width / 1.2,
+        marginTop: 30,
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    headerTitle: {
+        color: 'white',
+        fontSize: 15,
+        margin: 5
     }
 })
 
@@ -149,4 +190,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, null)(ProfileScreen)
+export default connect(mapStateToProps, { userUpdatePhotoUrl, userUpdateDisplayName, userUpdateEmail })(ProfileScreen)

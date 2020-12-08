@@ -21,6 +21,10 @@ function ProfileScreen(props) {
     const [displayName, setDisplayName] = useState(props.displayName)
     const [email, setEmail] = useState(props.email)
     const [isEditing, setIsEditing] = useState(false)
+    const [emailError, setEmailError] = useState(false)
+    const [displayNameError, setDisplayNameError] = useState(false)
+    const [emailSuccess, setEmailSuccess] = useState(false)
+    const [displayNameSuccess, setDisplayNameSuccess] = useState(false)
 
     function selectImage() {
         const options = {
@@ -86,14 +90,23 @@ function ProfileScreen(props) {
         firebase.auth().currentUser.updateEmail(email)
             .then(() => {
                 props.userUpdateEmail(email)
+                setEmailSuccess(true)
             })
-            .catch(e => console.log(e))
+            .catch(e => {
+                setEmail(props.email)
+                setEmailError(true)
+                console.log(e)
+            })
         
         firebase.auth().currentUser.updateProfile({
             displayName: displayName
         }).then(() => {
             props.userUpdateDisplayName(displayName)
-        }).catch(e => console.log(e))
+            setDisplayNameSuccess(true)
+        }).catch(e => {
+            setDisplayNameError(true)
+            console.log(e)
+        })
     }
 
     function currentProfileImage() {
@@ -134,8 +147,8 @@ function ProfileScreen(props) {
                         <Icon color='white' name='account-edit' size={30} />
                     </TouchableOpacity>
                 </View>
-                <ProfileInfo isEditing={isEditing} content={email} type='Email' onChangeHandler={onChangeInformationsHandler} />
-                <ProfileInfo isEditing={isEditing} content={displayName} type='Username' onChangeHandler={onChangeInformationsHandler} />
+                <ProfileInfo isEditing={isEditing} emailSuccess={emailSuccess} emailError={emailError} content={email} type='Email' onChangeHandler={onChangeInformationsHandler} />
+                <ProfileInfo isEditing={isEditing} displayNameSuccess={displayNameSuccess} displayNameError={displayNameError} content={displayName} type='Username' onChangeHandler={onChangeInformationsHandler} />
                 <TouchableOpacity style={{ marginTop: 10 }} onPress={() => {
                     updateUserInformations()
                 }}>

@@ -34,30 +34,6 @@ class LoginPage extends React.Component {
         }
     }
 
-    tryLogin() {
-        this.setState({isLoading: true})
-        const { email, password } = this.state
-
-        this.props.tryLogin(email, password)
-            .then(user => {
-                if (user !== null) {
-                    this.setState({
-                        isLoading: false,
-                        message: '',
-                        emailError: false,
-                        passwordError: false,
-                        loginSuccess: false,
-                        email: '',
-                        password: ''
-                    })
-                    this.props.navigation.replace('Store')
-                }
-            })
-            .catch(error => {
-                this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
-            })
-    }
-
     renderButtonLoading() {
         if (this.state.isLoading === true) {
             return (
@@ -82,6 +58,33 @@ class LoginPage extends React.Component {
         )
     }
 
+    tryLogin() {
+        this.setState({ isLoading: true })
+        const { email, password } = this.state
+
+        this.props.tryLogin(email, password)
+            .then(user => {
+                if (user !== null) {
+                    this.setState({
+                        isLoading: false,
+                        message: '',
+                        emailError: false,
+                        passwordError: false,
+                        loginSuccess: false,
+                        email: '',
+                        password: ''
+                    })
+                    this.props.navigation.replace('Store')
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    isLoading: false,
+                    message: this.getMessageByErrorCode(error)
+                })
+            })
+    }
+
     getMessageByErrorCode(error) {
         this.setState({
             emailError: false,
@@ -89,17 +92,16 @@ class LoginPage extends React.Component {
         })
 
         switch (error) {
-            case 'auth/wrong-password':
+            case 'nonexistent-email':
+                this.setState({ emailError: true })
+                return "Email doesn't exist"
+            case 'incorrect-password':
                 this.setState({ passwordError: true })
                 return 'Incorrect password'
-            case 'auth/invalid-email':
+            case 'unverified-account':
                 this.setState({ emailError: true })
-                return 'Invalid email'
-            case 'auth/user-not-found':
-                this.setState({ emailError: true })
-                return 'User not found'
+                return 'Unverified account, please check your email'
             default:
-                console.log(error)
                 return 'Unknown error'
         }
     }
@@ -112,7 +114,7 @@ class LoginPage extends React.Component {
                     <Image source={require('../../images/steamIcon.png')} style={styles.logo}/>
                     <Text style={styles.slogan}>Let the games begin</Text>
 
-                    {/*The bind here is very necessary, because the function was being executed in other component changing the this context*/}
+                    {/*The bind here is very necessary, because the function was being executed in other component changing the 'this' context*/}
                     <Input first success={this.state.loginSuccess} error={this.state.emailError} text={'Email'} onChangeText={onChangeTextHandler.bind(this)} emailValue={this.state.email} />
                     <Input success={this.state.loginSuccess} error={this.state.passwordError} text={'Password'} onChangeText={onChangeTextHandler.bind(this)} passwordValue={this.state.password} />
                     {this.renderMessage()}

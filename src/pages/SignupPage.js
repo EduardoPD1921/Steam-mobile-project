@@ -2,8 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
-import firebase from '../firebase/index'
-import { StatusBar } from 'expo-status-bar'
+import axios from 'axios'
 
 import SignupInput from '../components/SignupInput'
 import SignupButton from '../components/SignupButton'
@@ -33,35 +32,42 @@ export default class SignupPage extends React.Component {
 
             const { email, password, username } = this.state
 
-            firebase.auth()
-                .createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    let user = firebase.auth().currentUser
+            const headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application.json'
+            }
+    
+            const data = {
+                email: email,
+                password: password,
+                displayName: username
+            }
 
-                    user.updateProfile({
-                        displayName: username
-                    }).then(
+            axios({
+                method: 'POST',
+                url: 'http://192.168.0.14/appserver/app/database/insert.php',
+                headers: headers,
+                data: JSON.stringify(data)
+            })
+                .then(resp => {
+                    if (resp.data == 'email-sent') {
                         this.setState({
-                            isLoading: false,
                             signupSuccess: true,
-                            emailError: false,
-                            passwordError: false,
-                            usernameError: false,
-                            message: 'Sign up succesful!'
-                        }),
-                    )
-                    
+                            isLoading: false,
+                            message: 'A validation email has been sent'
+                        })
+                    }
                 })
                 .catch(error => {
                     this.setState({
-                        isLoading: false,
-                        message: this.getMessageByErrorCode(error.code)
+                        message: this.getMessageByErrorCode(error.response.data),
+                        isLoading: false
                     })
-
                 })
         } else {
             this.setState({
-                message: this.getMessageByErrorCode('invalid-username')
+                message: this.getMessageByErrorCode('invalid-username'),
+                isLoading: false
             })
         }
     }
@@ -74,18 +80,18 @@ export default class SignupPage extends React.Component {
         })
     
         switch (error) {
-            case 'auth/invalid-email':
-                this.setState({ emailError: true })
-                return 'Invalid email'
-            case 'auth/email-already-in-use':
-                this.setState({ emailError: true })
-                return 'Email already in use'
-            case 'auth/weak-password':
-                this.setState({ passwordError: true })
-                return 'Password is too weak'
             case 'invalid-username':
                 this.setState({ usernameError: true })
                 return 'Invalid username'
+            case 'invalid-email':
+                this.setState({ emailError: true })
+                return 'Invalid email'
+            case 'weak-password':
+                this.setState({ passwordError: true })
+                return 'Weak password'
+            case 'email-already-exists':
+                this.setState({ emailError: true })
+                return 'Email already exists'
             default:
                 return 'Unkown error'
         }

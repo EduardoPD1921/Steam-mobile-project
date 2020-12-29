@@ -3,8 +3,6 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'rea
 import firebase from '../firebase'
 import { connect } from 'react-redux'
 
-import axios from 'axios'
-
 import ImagePicker from 'react-native-image-picker'
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
@@ -194,9 +192,9 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     if (state.user !== null) {
         return {
-            email: state.user.user.email,
-            displayName: state.user.user.displayName,
-            photoURL: state.user.user.photoURL
+            email: state.user.email,
+            displayName: state.user.displayName,
+            photoURL: state.user.photoUrl
         }
     } else {
         return {}

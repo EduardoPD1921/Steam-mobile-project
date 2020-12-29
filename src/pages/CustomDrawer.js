@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 
 import { userLogout } from '../actions'
+import { State } from 'react-native-gesture-handler'
 
 class CustomDrawer extends React.Component {
     constructor(props) {
@@ -189,8 +190,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     if (state.user !== null) {
         return {
-            userName: state.user.user.displayName,
-            photoURL: state.user.user.photoURL
+            userName: state.user.displayName,
+            photoURL: state.user.photoUrl
         }
     } else {
         return {  }

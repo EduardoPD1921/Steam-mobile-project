@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import axios from 'axios'
 
 export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
 const userLoginSuccess = user => {
@@ -16,7 +16,7 @@ export const userLogout = () => {
 }
 
 export const tryLogin = ( email, password ) => dispatch => {
-    return firebase.auth()
+    /*return firebase.auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
             const action = userLoginSuccess(user)
@@ -26,6 +26,31 @@ export const tryLogin = ( email, password ) => dispatch => {
         })
         .catch(error => {
             return Promise.reject(error)
+        })*/
+    const data = {
+        email: email,
+        password: password
+    }
+
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application.json'
+    }
+
+    return axios({
+        method: 'POST',
+        url: 'http://192.168.0.14/appserver/app/database/login.php',
+        headers: headers,
+        data: JSON.stringify(data)
+    })
+        .then(user => {
+            const action = userLoginSuccess(user.data)
+            dispatch(action)
+
+            return user.data
+        })
+        .catch(error => {
+            return Promise.reject(error.response.data)
         })
 }
 

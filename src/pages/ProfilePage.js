@@ -10,7 +10,7 @@ import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
 /*import Progress from 'react-native-progress'*/
 
-import CLIENT_ID from '../../api'
+//import CLIENT_ID from '../../api'
 
 function ProfileScreen(props) {
     const [image, setImage] = useState(null)

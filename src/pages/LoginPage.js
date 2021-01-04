@@ -1,8 +1,9 @@
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import firebase from 'firebase'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
+
+import axios from 'axios'
 
 import Input from '../components/LoginInput'
 import Button from '../components/LoginButton'
@@ -35,7 +36,28 @@ class LoginPage extends React.Component {
     }
 
     tryLogin() {
-        this.setState({isLoading: true})
+        //this.setState({ isLoading: true })
+        const { email, password } = this.state
+
+        this.props.tryLogin(email, password)
+            .then(user => {
+                if (user !== null) {
+                    this.setState({
+                        isLoading: false,
+                        message: '',
+                        emailError: false,
+                        passwordError: false,
+                        loginSuccess: false,
+                        email: '',
+                        password: ''
+                    })
+                    this.props.navigate.replace('Store')
+                }
+            })
+            .catch(error => {
+
+            })
+        /*this.setState({isLoading: true})
         const { email, password } = this.state
 
         this.props.tryLogin(email, password)
@@ -55,7 +77,7 @@ class LoginPage extends React.Component {
             })
             .catch(error => {
                 this.setState({isLoading: false, message: this.getMessageByErrorCode(error.code)})
-            })
+            })*/
     }
 
     renderButtonLoading() {
@@ -87,20 +109,7 @@ class LoginPage extends React.Component {
             emailError: false,
             passwordError: false
         })
-
-        switch (error) {
-            case 'auth/wrong-password':
-                this.setState({ passwordError: true })
-                return 'Incorrect password'
-            case 'auth/invalid-email':
-                this.setState({ emailError: true })
-                return 'Invalid email'
-            case 'auth/user-not-found':
-                this.setState({ emailError: true })
-                return 'User not found'
-            default:
-                return 'Unknown error'
-        }
+        
     }
 
     render() {

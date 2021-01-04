@@ -5,6 +5,8 @@ import CheckBox from '@react-native-community/checkbox'
 import firebase from '../firebase/index'
 import { StatusBar } from 'expo-status-bar'
 
+import axios from 'axios'
+
 import SignupInput from '../components/SignupInput'
 import SignupButton from '../components/SignupButton'
 
@@ -28,42 +30,41 @@ export default class SignupPage extends React.Component {
     }
 
     trySignup() {
-        if (this.state.username) {
-            this.setState({ isLoading: true })
+        this.setState({ isLoading: true })
 
-            const { email, password, username } = this.state
-
-            firebase.auth()
-                .createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    let user = firebase.auth().currentUser
-
-                    user.updateProfile({
-                        displayName: username
-                    }).then(
-                        this.setState({
-                            isLoading: false,
-                            signupSuccess: true,
-                            emailError: false,
-                            passwordError: false,
-                            usernameError: false,
-                            message: 'Sign up succesful!'
-                        }),
-                    )
-                    
-                })
-                .catch(error => {
-                    this.setState({
-                        isLoading: false,
-                        message: this.getMessageByErrorCode(error.code)
-                    })
-
-                })
-        } else {
-            this.setState({
-                message: this.getMessageByErrorCode('invalid-username')
-            })
+        const headers = {
+            'Accept':'application/json',
+            'Content-type' :'application/json'
         }
+
+        const data = {
+            email: this.state.email,
+            password: this.state.password,
+            displayName: this.state.username
+        }
+
+        axios({
+            method: 'POST',
+            url: 'http://192.168.0.14/steam-project-backend/appServer/app/database/insert.php',
+            headers: headers,
+            data: JSON.stringify(data)
+        })
+            .then(resp => {
+                this.setState({
+                    isLoading: false,
+                    signupSuccess: true,
+                    emailError: false,
+                    passwordError: false,
+                    usernameError: false,
+                    message: 'A validation email was sent'
+                })
+            })
+            .catch(error => {
+                this.setState({
+                    isLoading: false,
+                    message: this.getMessageByErrorCode(error.response.data)
+                })
+            })
     }
 
     getMessageByErrorCode(error) {
@@ -72,22 +73,22 @@ export default class SignupPage extends React.Component {
             passwordError: false,
             usernameError: false
         })
-    
+        
         switch (error) {
-            case 'auth/invalid-email':
+            case 'email-already-exists':
                 this.setState({ emailError: true })
-                return 'Invalid email'
-            case 'auth/email-already-in-use':
-                this.setState({ emailError: true })
-                return 'Email already in use'
-            case 'auth/weak-password':
+                return 'Email already exists'
+            case 'weak-password':
                 this.setState({ passwordError: true })
                 return 'Password is too weak'
+            case 'invalid-email':
+                this.setState({ emailError: true })
+                return 'Invalid email'
             case 'invalid-username':
                 this.setState({ usernameError: true })
                 return 'Invalid username'
             default:
-                return 'Unkown error'
+                return 'Unknown error'
         }
     }
 
@@ -119,9 +120,8 @@ export default class SignupPage extends React.Component {
     renderMessage() {
         if (this.state.message) {
             return (
-                <Text 
-                    style={this.state.signupSuccess ? styles.successMessage : styles.errorMessage
-                    }>{this.state.message}
+                <Text style={this.state.signupSuccess ? styles.successMessage : styles.errorMessage}>
+                    {this.state.message}
                 </Text>
             )
         }

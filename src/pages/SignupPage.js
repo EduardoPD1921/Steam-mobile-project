@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 
-import firebase from '../firebase/index'
 import { StatusBar } from 'expo-status-bar'
 
 import axios from 'axios'

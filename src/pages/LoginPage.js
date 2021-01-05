@@ -36,7 +36,7 @@ class LoginPage extends React.Component {
     }
 
     tryLogin() {
-        //this.setState({ isLoading: true })
+        this.setState({ isLoading: true })
         const { email, password } = this.state
 
         this.props.tryLogin(email, password)
@@ -51,11 +51,14 @@ class LoginPage extends React.Component {
                         email: '',
                         password: ''
                     })
-                    this.props.navigate.replace('Store')
+                    this.props.navigation.replace('Store')
                 }
             })
             .catch(error => {
-
+                this.setState({
+                    isLoading: false,
+                    message: this.getMessageByErrorCode(error)
+                })
             })
         /*this.setState({isLoading: true})
         const { email, password } = this.state
@@ -110,6 +113,19 @@ class LoginPage extends React.Component {
             passwordError: false
         })
         
+        switch (error) {
+            case 'unverified-account':
+                this.setState({ emailError: true })
+                return 'Unverified account'
+            case 'incorrect-password':
+                this.setState({ passwordError: true })
+                return 'Incorrect password'
+            case 'nonexistent-email':
+                this.setState({ emailError: true })
+                return 'Nonexistent email'
+            default:
+                return 'Unknown error'
+        }
     }
 
     render() {

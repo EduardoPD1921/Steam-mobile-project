@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
     if (state.user !== null) {
         return {
-            userName: state.user.user.displayName,
-            photoURL: state.user.user.photoURL
+            userName: state.user.displayName,
+            photoURL: state.user.photoUrl
         }
     } else {
         return {  }

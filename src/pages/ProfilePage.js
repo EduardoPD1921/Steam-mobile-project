@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, Platform, Alert } from 'react-native'
-import firebase from '../firebase'
 import { connect } from 'react-redux'
 
 import axios from 'axios'
@@ -77,10 +76,8 @@ function ProfileScreen(props) {
 
     function currentProfileImage() {
         if (image !== null) {
-            console.log('test1')
             return image
         } else {
-            console.log('test2')
             return props.photoURL
         }
     }
@@ -107,7 +104,6 @@ function ProfileScreen(props) {
                 </TouchableOpacity>
             </View>
             <View style={styles.profileInformations}>
-                {console.log(props.displayName)}
                 <ProfileInfo isEditing={true} value='email' content={email} type='email' onChangeHandler={onChangeInformationsHandler} />
                 <ProfileInfo isEditing={true} value='displayName' content={displayName} type='displayName' onChangeHandler={onChangeInformationsHandler} />
             </View>
@@ -140,9 +136,9 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     if (state.user !== null) {
         return {
-            email: state.user.user.email,
-            displayName: state.user.user.displayName,
-            photoURL: state.user.user.photoURL
+            email: state.user.email,
+            displayName: state.user.displayName,
+            photoURL: state.user.photoUrl
         }
     } else {
         return {}

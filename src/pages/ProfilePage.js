@@ -1,148 +1,111 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Platform, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 
 import axios from 'axios'
 
 import ImagePicker from 'react-native-image-picker'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
-/*import Progress from 'react-native-progress'*/
 
 //import CLIENT_ID from '../../api'
 
-function ProfileScreen(props) {
-    const [image, setImage] = useState(null)
-    const [imageInfo, setImageInfo] = useState(null)
-    const [displayName, setDisplayName] = useState(props.displayName)
+const ProfilePage = props => {
+    const [userName, setUsername] = useState(props.userName)
+    const [photoUrl, setPhotoUrl] = useState(props.photoUrl)
     const [email, setEmail] = useState(props.email)
-
-    function selectImage() {
-        const options = {
-            maxWidth: 2000,
-            maxHeight: 2000,
-            storageOptions: {
-                skipBackup: true,
-                path: 'images'
-            }
-        }
-
-        ImagePicker.showImagePicker(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker')
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error)
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton)
-            } else {
-                const source = response
-                
-                setImage(source.uri)
-                setImageInfo(source)
-                console.log(source)
-            }
-        })
-    }
-
-    function uploadImage() {
-        /*const data = new FormData()
-
-        data.append('image', {
-            fileName: imageInfo.fileName,
-            uri: imageInfo.uri,
-            type: imageInfo.type
-        })
-
-        const uploadConfig = {
-            method: 'POST',
-            body: data,
-            headers: {
-                'Authorization': `Client-ID ${CLIENT_ID}`
-            }
-        }
-
-        axios.post('https://api.imgur.com/3/image', data, uploadConfig)
-            .then(res => {
-                console.log(res.data.data.link)
-                setImage(res.data.data.link)
-
-                firebase.auth().currentUser.updateProfile({
-                    photoURL: res.data.data.link
-                })
-            }).catch(e => {
-                console.log(e)
-            })*/
-    }
-
-    function currentProfileImage() {
-        if (image !== null) {
-            return image
-        } else {
-            return props.photoURL
-        }
-    }
-
-    function onChangeInformationsHandler(content, field) {
-        switch (field) {
-            case 'email':
-                setEmail(content)
-                break
-            case 'displayName':
-                setDisplayName(content)
-                break
-            default:
-                console.log('error')
-        }
-    }
+    const [phoneNumber, setPhoneNumber] = useState(props.phoneNumber)
 
     return (
-        <View style={styles.mainContainer}>
-            <View style={styles.avatarContainer}>
-                <Avatar image={currentProfileImage()} size={100} />
-                <TouchableOpacity style={styles.chooseImageButton} onPress={selectImage}>
-                    <Text style={{ color: 'white' }}>Choose an image</Text>
-                </TouchableOpacity>
+        <View style={styles.mainBackground}>
+            <View style={styles.auxiliarContainer}>
+                <Icon onPress={() => props.navigation.goBack()} style={styles.goBackArrow} color='white' name='arrow-left' size={30} />
             </View>
-            <View style={styles.profileInformations}>
-                <ProfileInfo isEditing={true} value='email' content={email} type='email' onChangeHandler={onChangeInformationsHandler} />
-                <ProfileInfo isEditing={true} value='displayName' content={displayName} type='displayName' onChangeHandler={onChangeInformationsHandler} />
+            <View style={styles.mainContainer}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.headerText}>My Profile</Text>
+                    <Text>Please complete your profile</Text>
+                </View>
+                <View style={styles.avatar}>
+                    <Avatar size={120} />
+                    <View style={{ position: 'absolute' }}>
+                        <Icon style={styles.cameraIcon} name='camera' color='white' size={30} />
+                    </View>
+                </View>
+                <View style={styles.profileInformation}>
+                    <ProfileInfo type='Username' content={userName} />
+                    <ProfileInfo type='Email' content={email} />
+                    <ProfileInfo type='Phone Number' content={phoneNumber} />
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        backgroundColor: '#141D68'
+    mainBackground: {
+        backgroundColor: '#002350',
+        flex: 1
     },
-    avatarContainer: {
+    mainContainer: {
+        backgroundColor: '#F1F1F1',
+        flex: 1,
+        borderTopRightRadius: 34,
+        borderTopLeftRadius: 34
+    },
+    auxiliarContainer: {
+        flex: 0.12
+    },
+    goBackArrow: {
+        marginLeft: 10,
+        marginTop: 10
+    },
+    textContainer: {
+        margin: 20
+    },
+    headerText: {
+        fontSize: 24,
+        fontFamily: 'roboto',
+        color: '#3A3333',
+        opacity: 0.79,
+    },
+    subText: {
+        fontSize: 11,
+        color: '#000000',
+        opacity: 0.47
+    },
+    avatar: {
         alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
         marginTop: 20
     },
-    chooseImageButton: {
-        marginTop: 10,
-        padding: 10,
-        backgroundColor: '#0569FE',
-        borderRadius: 5
+    cameraIcon: {
+        marginLeft: 70,
+        backgroundColor: '#002350',
+        borderRadius: 30,
+        padding: 8
     },
-    profileInformations: {
-        backgroundColor: '#1C2A50',
-        alignSelf: 'center'
+    profileInformation: {
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-around'
     }
 })
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     if (state.user !== null) {
         return {
+            userName: state.user.displayName,
+            photoUrl: state.user.photoUrl,
             email: state.user.email,
-            displayName: state.user.displayName,
-            photoURL: state.user.photoUrl
-        }
+            phoneNumber: state.user.phoneNumber 
+        } 
     } else {
         return {}
     }
 }
 
-export default connect(mapStateToProps, null)(ProfileScreen)
+export default connect(mapStateToProps, null)(ProfilePage)

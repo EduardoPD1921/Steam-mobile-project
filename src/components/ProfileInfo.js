@@ -1,11 +1,11 @@
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native'
 
-export default ({ type, content }) => {
+export default ({ type, content, onChangeTextHandler }) => {
     return (
         <View>
             <Text style={styles.typeText}>{type}</Text>
-            <TextInput style={styles.textInput} value={content} />
+            <TextInput onChangeText={value => onChangeTextHandler(type, value)} style={styles.textInput} value={content} />
         </View>
     )
 }

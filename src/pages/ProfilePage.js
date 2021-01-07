@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 
 import axios from 'axios'
@@ -17,6 +17,71 @@ const ProfilePage = props => {
     const [photoUrl, setPhotoUrl] = useState(props.photoUrl)
     const [email, setEmail] = useState(props.email)
     const [phoneNumber, setPhoneNumber] = useState(props.phoneNumber)
+    const [userNameWasEdited, setUsernameWasEdited] = useState(false)
+    const [photoUrlWasEdited, setPhotoUrlWasEdited] = useState(false)
+    const [emailWasEdited, setEmailWasEdited] = useState(false)
+    const [phoneNumberWasEdited, setPhoneNumberWasEdited] = useState(false)
+
+    function onChangeText(type, value) {
+        switch (type) {
+            case 'Email':
+                setEmail(value)
+                setEmailWasEdited(true)
+                break
+            case 'Username':
+                setUsername(value)
+                setUsernameWasEdited(true)
+                break
+            case 'Phone Number':
+                setPhoneNumber(value)
+                setPhoneNumberWasEdited(true)
+                break
+            default:
+                console.log('Unknow error')
+                break
+        }
+    }
+
+    function updateProfileInfo() {
+        let data = {
+            id: props.id
+        }
+        
+        if (emailWasEdited === true) {
+            data = {
+                ...data,
+                email: email
+            }
+        }
+
+        if (userNameWasEdited === true) {
+            data = {
+                ...data,
+                userName: userName
+            }
+        }
+
+        if (phoneNumberWasEdited === true) {
+            data = {
+                ...data,
+                phoneNumber: phoneNumber
+            }
+        }
+
+        const headers = {
+            'Accept':'application/json',
+            'Content-type' :'application/json'
+        }
+
+        axios({
+            method: 'PUT',
+            url: 'http://192.168.0.14/steam-project-backend/appServer/app/database/updateInfo.php',
+            headers: headers,
+            data: JSON.stringify(data)
+        })
+            .then(resp => console.log(resp))
+            .catch(error => console.log(error.response))
+    }
 
     return (
         <View style={styles.mainBackground}>
@@ -35,9 +100,14 @@ const ProfilePage = props => {
                     </View>
                 </View>
                 <View style={styles.profileInformation}>
-                    <ProfileInfo type='Username' content={userName} />
-                    <ProfileInfo type='Email' content={email} />
-                    <ProfileInfo type='Phone Number' content={phoneNumber} />
+                    <ProfileInfo onChangeTextHandler={onChangeText} type='Username' content={userName} />
+                    <ProfileInfo onChangeTextHandler={onChangeText} type='Email' content={email} />
+                    <ProfileInfo onChangeTextHandler={onChangeText} type='Phone Number' content={phoneNumber} />
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <TouchableOpacity onPress={() => updateProfileInfo()} style={styles.saveButton}>
+                        <Text style={{ fontSize: 15, textAlign: 'center' }}>Save</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -89,15 +159,25 @@ const styles = StyleSheet.create({
         padding: 8
     },
     profileInformation: {
+        flex: 0.8,
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-around'
+    },
+    saveButton: {
+        backgroundColor: '#0e94dc',
+        width: 50,
+        height: 30,
+        borderRadius: 5,
+        justifyContent: 'center',
+        marginRight: 45
     }
 })
 
 const mapStateToProps = state => {
     if (state.user !== null) {
         return {
+            id: state.user.id,
             userName: state.user.displayName,
             photoUrl: state.user.photoUrl,
             email: state.user.email,

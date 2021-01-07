@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { connect } from 'react-redux'
 
 import axios from 'axios'
@@ -79,14 +79,41 @@ const ProfilePage = props => {
             headers: headers,
             data: JSON.stringify(data)
         })
-            .then(resp => console.log(resp))
+            .then(resp => {
+                console.log(resp)
+                setUsernameWasEdited(false)
+                setEmailWasEdited(false)
+                setPhoneNumberWasEdited(false)
+                setPhotoUrlWasEdited(false)
+            })
             .catch(error => console.log(error.response))
+    }
+
+    function goBackNavigation() {
+        if (emailWasEdited === true || userNameWasEdited === true || phoneNumberWasEdited === true || photoUrlWasEdited === true) {
+            Alert.alert(
+                'Your changes were not saved',
+                'Please save your informations',
+                [
+                    {
+                        text: 'Ok'
+                    },
+                    {
+                        text: 'Cancel',
+                        style: 'cancel'
+                    }
+                ],
+                { cancelable: false }
+            )
+        } else {
+            props.navigation.goBack()
+        }
     }
 
     return (
         <View style={styles.mainBackground}>
             <View style={styles.auxiliarContainer}>
-                <Icon onPress={() => props.navigation.goBack()} style={styles.goBackArrow} color='white' name='arrow-left' size={30} />
+                <Icon onPress={() => goBackNavigation()} style={styles.goBackArrow} color='white' name='arrow-left' size={30} />
             </View>
             <View style={styles.mainContainer}>
                 <View style={styles.textContainer}>

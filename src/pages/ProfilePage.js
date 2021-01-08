@@ -6,6 +6,7 @@ import axios from 'axios'
 
 import ImagePicker from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import parsePhoneNumber, { AsYouType } from 'libphonenumber-js'
 
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
@@ -32,10 +33,6 @@ const ProfilePage = props => {
                 setUsername(value)
                 setUsernameWasEdited(true)
                 break
-            case 'Phone Number':
-                setPhoneNumber(value)
-                setPhoneNumberWasEdited(true)
-                break
             default:
                 console.log('Unknow error')
                 break
@@ -43,7 +40,12 @@ const ProfilePage = props => {
     }
 
     function updateProfileInfo() {
-        let data = {
+        const number = parsePhoneNumber(phoneNumber)
+
+        console.log(number.number)
+        console.log(number.country)
+
+        /*let data = {
             id: props.id
         }
         
@@ -86,7 +88,13 @@ const ProfilePage = props => {
                 setPhoneNumberWasEdited(false)
                 setPhotoUrlWasEdited(false)
             })
-            .catch(error => console.log(error.response))
+            .catch(error => console.log(error.response))*/
+    }
+
+    function updatePhoneNumber(type, value) {
+        const number = new AsYouType().input(value)
+        setPhoneNumber(number)
+        setPhoneNumberWasEdited(true)
     }
 
     function goBackNavigation() {
@@ -129,7 +137,7 @@ const ProfilePage = props => {
                 <View style={styles.profileInformation}>
                     <ProfileInfo onChangeTextHandler={onChangeText} type='Username' content={userName} />
                     <ProfileInfo onChangeTextHandler={onChangeText} type='Email' content={email} />
-                    <ProfileInfo onChangeTextHandler={onChangeText} type='Phone Number' content={phoneNumber} />
+                    <ProfileInfo onChangeTextHandler={updatePhoneNumber} type='Phone Number' content={phoneNumber} />
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                     <TouchableOpacity onPress={() => updateProfileInfo()} style={styles.saveButton}>

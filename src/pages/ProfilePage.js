@@ -34,18 +34,37 @@ const ProfilePage = props => {
                 setUsernameWasEdited(true)
                 break
             default:
-                console.log('Unknow error')
+                console.log('Unknown error')
                 break
         }
     }
 
     function updateProfileInfo() {
-        const number = parsePhoneNumber(phoneNumber)
+        const headers = {
+            'Accept':'application/json',
+            'Content-type' :'application/json'
+        }
+
+        const data = {
+            phoneNumber: phoneNumber
+        }
+
+        axios({
+            method: 'PUT',
+            url: 'http://192.168.0.14/steam-project-backend/appServer/app/database/test.php',
+            headers: headers,
+            data: JSON.stringify(data)
+        })
+            .then(resp => console.log(resp))
+            .catch(error => console.log(error.response))
+
+        /*const number = parsePhoneNumber(phoneNumber)
 
         console.log(number.number)
         console.log(number.country)
+        console.log(number.isValid())
 
-        /*let data = {
+        let data = {
             id: props.id
         }
         

@@ -15,6 +15,30 @@ export const userLogout = () => {
     }
 }
 
+export const USER_UPDATE_DISPLAYNAME = 'USER_UPDATE_DISPLAYNAME'
+export const userUpdateDisplayName = displayName => {
+    return {
+        type: USER_UPDATE_DISPLAYNAME,
+        displayName
+    }
+}
+
+export const USER_UPDATE_EMAIL = 'USER_UPDATE_EMAIL'
+export const userUpdateEmail = email => {
+    return {
+        type: USER_UPDATE_EMAIL,
+        email
+    }
+}
+
+export const USER_UPDATE_PHONENUMBER = 'USER_UPDATE_PHONENUMBER'
+export const userUpdatePhoneNumber = phoneNumber => {
+    return {
+        type: USER_UPDATE_PHONENUMBER,
+        phoneNumber
+    }
+}
+
 export const tryLogin = ( email, password ) => dispatch => {
     const headers = {
         'Accept':'application/json',

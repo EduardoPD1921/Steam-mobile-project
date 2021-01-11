@@ -11,6 +11,8 @@ import parsePhoneNumber, { AsYouType } from 'libphonenumber-js'
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
 
+import { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber } from '../actions'
+
 //import CLIENT_ID from '../../api'
 
 const ProfilePage = props => {
@@ -22,6 +24,11 @@ const ProfilePage = props => {
     const [photoUrlWasEdited, setPhotoUrlWasEdited] = useState(false)
     const [emailWasEdited, setEmailWasEdited] = useState(false)
     const [phoneNumberWasEdited, setPhoneNumberWasEdited] = useState(false)
+    const [message, setMessage] = useState(null)
+    const [userNameError, setUserNameError] = useState(false)
+    const [emailError, setEmailError] = useState(false)
+    const [phoneNumberError, setPhoneNumberError] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     function onChangeText(type, value) {
         switch (type) {
@@ -40,58 +47,17 @@ const ProfilePage = props => {
     }
 
     function updateProfileInfo() {
+
         const headers = {
             'Accept':'application/json',
             'Content-type' :'application/json'
         }
 
         const data = {
+            id: props.id,
+            email: email,
+            userName: userName,
             phoneNumber: phoneNumber
-        }
-
-        axios({
-            method: 'PUT',
-            url: 'http://192.168.0.14/steam-project-backend/appServer/app/database/test.php',
-            headers: headers,
-            data: JSON.stringify(data)
-        })
-            .then(resp => console.log(resp))
-            .catch(error => console.log(error.response))
-
-        /*const number = parsePhoneNumber(phoneNumber)
-
-        console.log(number.number)
-        console.log(number.country)
-        console.log(number.isValid())
-
-        let data = {
-            id: props.id
-        }
-        
-        if (emailWasEdited === true) {
-            data = {
-                ...data,
-                email: email
-            }
-        }
-
-        if (userNameWasEdited === true) {
-            data = {
-                ...data,
-                userName: userName
-            }
-        }
-
-        if (phoneNumberWasEdited === true) {
-            data = {
-                ...data,
-                phoneNumber: phoneNumber
-            }
-        }
-
-        const headers = {
-            'Accept':'application/json',
-            'Content-type' :'application/json'
         }
 
         axios({
@@ -101,19 +67,56 @@ const ProfilePage = props => {
             data: JSON.stringify(data)
         })
             .then(resp => {
-                console.log(resp)
                 setUsernameWasEdited(false)
                 setEmailWasEdited(false)
                 setPhoneNumberWasEdited(false)
                 setPhotoUrlWasEdited(false)
+                setEmailError(false)
+                setUserNameError(false)
+                setPhoneNumberError(false)
+
+                setSuccess(true)
+
+                props.userUpdateDisplayName(userName)
+                props.userUpdateEmail(email)
+                props.userUpdatePhoneNumber(phoneNumber)
+
+                setMessage('Changes saved')
             })
-            .catch(error => console.log(error.response))*/
+            .catch(error => getMessageByErrorCode(error.response.data))
     }
 
     function updatePhoneNumber(type, value) {
         const number = new AsYouType().input(value)
         setPhoneNumber(number)
         setPhoneNumberWasEdited(true)
+    }
+
+    function getMessageByErrorCode(error) {
+        setEmailError(false)
+        setUserNameError(false)
+        setPhoneNumberError(false)
+
+        switch (error) {
+            case 'invalid-phonenumber':
+                setPhoneNumberError(true)
+                setMessage('Invalid Phone Number')
+                break
+            case 'email-already-inuse':
+                setEmailError(true)
+                setMessage('Email already in use')
+                break
+            case 'invalid-email':
+                setEmailError(true)
+                setMessage('Invalid email')
+                break
+            case 'invalid-username':
+                setUserNameError(true)
+                setMessage('Invalid username')
+                break
+            default:
+                console.log(error)
+        }
     }
 
     function goBackNavigation() {
@@ -133,7 +136,23 @@ const ProfilePage = props => {
                 { cancelable: false }
             )
         } else {
+            setMessage(null)
+            setSuccess(false)
             props.navigation.goBack()
+        }
+    }
+
+    function renderMessage() {
+        if (message) {
+            if (emailError === true || userNameError === true || phoneNumberError === true) {
+                return (
+                    <Text style={{ color: 'red' }}>{message}</Text>
+                )
+            } else {
+                return (
+                    <Text style={{ color: 'green' }}>{message}</Text>
+                )
+            }
         }
     }
 
@@ -154,9 +173,10 @@ const ProfilePage = props => {
                     </View>
                 </View>
                 <View style={styles.profileInformation}>
-                    <ProfileInfo onChangeTextHandler={onChangeText} type='Username' content={userName} />
-                    <ProfileInfo onChangeTextHandler={onChangeText} type='Email' content={email} />
-                    <ProfileInfo onChangeTextHandler={updatePhoneNumber} type='Phone Number' content={phoneNumber} />
+                    <ProfileInfo onChangeTextHandler={onChangeText} error={userNameError} success={success} type='Username' content={userName} />
+                    <ProfileInfo onChangeTextHandler={onChangeText} error={emailError} success={success} type='Email' content={email} />
+                    <ProfileInfo onChangeTextHandler={updatePhoneNumber} error={phoneNumberError} success={success} type='Phone Number' content={phoneNumber} />
+                    {renderMessage()}
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                     <TouchableOpacity onPress={() => updateProfileInfo()} style={styles.saveButton}>
@@ -242,4 +262,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(ProfilePage)
+export default connect(mapStateToProps, { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber })(ProfilePage)

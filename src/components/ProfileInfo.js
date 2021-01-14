@@ -1,11 +1,25 @@
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native'
 
-export default ({ type, content }) => {
+function getInputStyle(error, success) {
+    if (error == true) {
+        return [styles.textInput, { borderColor: 'red', borderWidth: 1 }]
+    } else if (success == true) {
+        return [styles.textInput, { borderColor: 'green', borderWidth: 1 }]
+    } else {
+        return styles.textInput
+    }
+}
+
+export default ({ type, content, onChangeTextHandler, error, success }) => {
     return (
         <View>
             <Text style={styles.typeText}>{type}</Text>
-            <TextInput style={styles.textInput} value={content} />
+            <TextInput 
+                onChangeText={value => onChangeTextHandler(type, value)} 
+                style={getInputStyle(error, success)} 
+                value={content}  
+            />
         </View>
     )
 }

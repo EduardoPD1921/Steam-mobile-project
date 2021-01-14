@@ -16,7 +16,7 @@ const Drawer = createDrawerNavigator()
 
 function DrawerRoutes() {
     return (
-        <Drawer.Navigator initialRouteName={'Store'} drawerContent={props => <CustomDrawer {...props} />}>
+        <Drawer.Navigator drawerType="slide" initialRouteName={'Store'} drawerContent={props => <CustomDrawer {...props} />}>
             <Drawer.Screen name='Profile' component={ProfilePage} />
             <Drawer.Screen name='Store' component={StorePage} />
             <Drawer.Screen name='Friends' component={FriendsPage} />
@@ -28,7 +28,7 @@ function DrawerRoutes() {
 function AppNavigator() {
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator mode="modal" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name='Login' component={LoginPage} />
                 <Stack.Screen name='Signup' component={SignupPage} />
                 <Stack.Screen name='Store' component={DrawerRoutes} />

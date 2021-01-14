@@ -1,4 +1,4 @@
-import { USER_LOGIN_SUCCESS, USER_LOGOUT, USER_UPDATE_DISPLAYNAME, USER_UPDATE_EMAIL, USER_UPDATE_PHONENUMBER } from '../actions'
+import { USER_LOGIN_SUCCESS, USER_LOGOUT, USER_UPDATE_DISPLAYNAME, USER_UPDATE_EMAIL, USER_UPDATE_PHONENUMBER, USER_UPDATE_PHOTO } from '../actions'
 
 const userReducer = (state = null, action) => {
     switch (action.type) {
@@ -20,6 +20,11 @@ const userReducer = (state = null, action) => {
             return {
                 ...state,
                 phoneNumber: action.phoneNumber
+            }
+        case USER_UPDATE_PHOTO:
+            return {
+                ...state,
+                photoUrl: action.photoUrl
             }
         default:
             return state

@@ -6,14 +6,12 @@ import axios from 'axios'
 
 import ImagePicker from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import parsePhoneNumber, { AsYouType } from 'libphonenumber-js'
+import { AsYouType } from 'libphonenumber-js'
 
 import Avatar from '../components/Avatar'
 import ProfileInfo from '../components/ProfileInfo'
 
-import { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber } from '../actions'
-
-//import CLIENT_ID from '../../api'
+import { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber, userUpdatePhoto } from '../actions'
 
 const ProfilePage = props => {
     const [userName, setUsername] = useState(props.userName)
@@ -46,8 +44,34 @@ const ProfilePage = props => {
         }
     }
 
-    function updateProfileInfo() {
+    function selectImage() {
+        const options = {
+            maxWidth: 2000,
+            maxHeight: 2000,
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        }
 
+        ImagePicker.showImagePicker(options, response => {
+            setPhotoUrlWasEdited(true)
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker')
+            } else if (response.error) {
+                console.log('ImagePicker Error', response.error)
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton)
+            } else {
+                const source = response
+
+                setPhotoUrl(source.uri)
+            }
+        })
+    }
+
+    function updateProfileInfo() {
         const headers = {
             'Accept':'application/json',
             'Content-type' :'application/json'
@@ -57,7 +81,8 @@ const ProfilePage = props => {
             id: props.id,
             email: email,
             userName: userName,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            photoUrl: photoUrl
         }
 
         axios({
@@ -80,6 +105,7 @@ const ProfilePage = props => {
                 props.userUpdateDisplayName(userName)
                 props.userUpdateEmail(email)
                 props.userUpdatePhoneNumber(phoneNumber)
+                props.userUpdatePhoto(photoUrl)
 
                 setMessage('Changes saved')
             })
@@ -167,9 +193,11 @@ const ProfilePage = props => {
                     <Text>Please complete your profile</Text>
                 </View>
                 <View style={styles.avatar}>
-                    <Avatar size={120} />
+                    <Avatar image={photoUrl} size={120} />
                     <View style={{ position: 'absolute' }}>
-                        <Icon style={styles.cameraIcon} name='camera' color='white' size={30} />
+                        <TouchableOpacity onPress={() => selectImage()}>
+                            <Icon style={styles.cameraIcon} name='camera' color='white' size={30} />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.profileInformation}>
@@ -262,4 +290,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber })(ProfilePage)
+export default connect(mapStateToProps, { userUpdateDisplayName, userUpdateEmail, userUpdatePhoneNumber, userUpdatePhoto })(ProfilePage)

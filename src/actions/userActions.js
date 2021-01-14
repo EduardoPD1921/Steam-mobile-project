@@ -39,6 +39,14 @@ export const userUpdatePhoneNumber = phoneNumber => {
     }
 }
 
+export const USER_UPDATE_PHOTO = 'USER_UPDATE_PHOTO'
+export const userUpdatePhoto = photoUrl => {
+    return {
+        type: USER_UPDATE_PHOTO,
+        photoUrl
+    }
+}
+
 export const tryLogin = ( email, password ) => dispatch => {
     const headers = {
         'Accept':'application/json',
